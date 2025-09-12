@@ -4,7 +4,7 @@
 A **role-based Patient Workflow Management System** frontend built with **React, Vite, Redux Toolkit, and Material-UI**.
 This application allows Patients, Doctors, and Admins to manage appointments, medical records, and dashboards seamlessly.
 
-Backend: [Node.js + Express + MySQL](#backend-setup) (included in backend repo/zip).
+Backend: [Node.js + Express + MySQL](https://github.com/KishanPatil/healthcare-backend.git) (included in backend repo/zip).
 
 ---
 
@@ -84,7 +84,7 @@ Innobot-Heathcare-Frontend/
 ### 1. Clone & Install
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/KishanPatil/healthcare-frontend.git
 cd Innobot-Heathcare-Frontend
 npm install
 ```
