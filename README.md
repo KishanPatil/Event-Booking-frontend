@@ -55,7 +55,7 @@ src/
 ### 1️⃣ Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/event-booking-frontend.git
+git clone https://github.com/KishanPatil/Event-Booking-frontend.git
 cd event-booking-frontend
 ```
 
