@@ -1,186 +1,220 @@
+# 🎟️ Event Booking Frontend
 
-# Healthcare Frontend
-
-A **role-based Patient Workflow Management System** frontend built with **React, Vite, Redux Toolkit, and Material-UI**.
-This application allows Patients, Doctors, and Admins to manage appointments, medical records, and dashboards seamlessly.
-
-Backend: [Node.js + Express + MySQL](https://github.com/KishanPatil/healthcare-backend.git) (included in backend repo/zip).
+A React-based **event booking platform** with real-time seat updates, JWT authentication, and Redux state management.
+Built with **React**, **Redux Toolkit**, **Material-UI**, and **Socket.IO** for live event updates.
 
 ---
 
 ## 🚀 Features
 
-### 👩‍⚕️ User Side (Patients)
-
-* Browse doctors by specialty, location, and availability
-* View doctor profiles with photos, bio, and expertise
-* Book appointments with slot selection (10:00–18:00, except 13:00–14:00)
-* View appointment history and medical records
-* Manage profile
-
-### 🧑‍⚕️ Doctor/Admin Side
-
-* Manage schedules
-* Access patient records and appointment statuses
-* Admin-only: Add new doctors with file upload (profile picture)
-
-### 🔒 Authentication
-
-* JWT-based login & registration
-* Role-based access: **Patient / Doctor / Admin**
-* Protected routes with `PrivateRoute`
-* Persistent login via `localStorage`
+✅ **User Authentication** (JWT-based login & protected routes)
+✅ **Event Listing** (fetched from backend API)
+✅ **Event Detail Page** (real-time availability via Socket.IO)
+✅ **Ticket Reservation + Payment Confirmation**
+✅ **Redux Toolkit Integration** for global state management
+✅ **Lazy-loaded routes** for performance optimization
+✅ **Responsive UI** built using Material-UI (MUI v5)
 
 ---
 
-## 🛠️ Tech Stack
-
-* **Frontend:** React 18, Vite, Redux Toolkit, React Router, Material-UI (MUI)
-* **State Management:** Redux Toolkit (slices for auth, doctors, appointments, records)
-* **Styling:** Material-UI, custom components (ToggleBox, CustomButton)
-* **Backend:** Node.js, Express, MySQL (JWT authentication, REST APIs)
-* **API Client:** Axios wrapper (`fetcher.js`) with token injection
-* **Auth:** JWT (`jwt-decode`)
-* **Dev Tools:** ESLint, Postman collection
-
----
-
-## 📂 Project Structure
+## 🗂️ Project Structure
 
 ```
-Innobot-Heathcare-Frontend/
-├── public/                # static assets
-├── src/
-│   ├── assets/            # images, icons
-│   ├── components/
-│   │   ├── auth/          # Login, Register
-│   │   ├── navbar/        # Navbar, Layout
-│   │   ├── doctors/       # DoctorCard, DoctorList
-│   │   ├── appointments/  # AppointmentForm, Booking
-│   │   ├── records/       # MedicalRecordList, RecordDetail
-│   │   └── commonUI/      # ToggleBox, CustomButton, reusable UI
-│   ├── pages/             # Page-level components
-│   ├── routes/            # AppRoutes, PrivateRoute
-│   ├── store/
-│   │   ├── store.js       # Redux store configuration
-│   │   └── slice/
-│   │       ├── authSlice.js
-│   │       ├── doctorSlice.js
-│   │       ├── appointmentSlice.js
-│   │       └── recordSlice.js
-│   ├── utils/
-│   │   ├── apiConstant.js # API endpoints
-│   │   └── fetcher.js     # Axios wrapper
-│   ├── App.jsx            # Root app component
-│   ├── main.jsx           # Entry point with Provider + Router
-│   └── index.css          # Global styles
-└── README.md
+src/
+├── components/
+│   ├── auth/
+│   │   └── LoginPage.jsx
+│   ├── dashboard/
+│   │   └── Dashboard.jsx
+│   ├── events/
+│   │   └── EventDetail.jsx
+│   ├── navbar/
+│   │   └── NavbarLayout.jsx
+│
+├── routes/
+│   ├── AppRoutes.jsx
+│   └── PrivateRoute.jsx
+│
+├── store/
+│   ├── slice/
+│   │   └── eventSlice.js
+│   └── store.js
+│
+├── utils/
+│   └── fetcher.js           # Axios base config with token
+│
+├── socket.js                # Global Socket.IO client instance
+├── App.js
+└── index.js
 ```
 
 ---
 
-## ⚙️ Setup Instructions
+## ⚙️ Setup & Installation
 
-### 1. Clone & Install
+### 1️⃣ Clone the repository
 
 ```bash
-git clone https://github.com/KishanPatil/healthcare-frontend.git
-cd Innobot-Heathcare-Frontend
+git clone https://github.com/yourusername/event-booking-frontend.git
+cd event-booking-frontend
+```
+
+### 2️⃣ Install dependencies
+
+```bash
 npm install
 ```
 
-### 2. Environment Variables
+### 3️⃣ Environment variables
 
-Create `.env` in project root:
+Create a `.env` file in the root directory:
 
+```env
+REACT_APP_API_URL=http://localhost:4000/api
+REACT_APP_SOCKET_URL=http://localhost:4000
 ```
-VITE_API_BASE_URL=http://localhost:5000
-```
 
-> ⚠️ By default, `src/utils/apiConstant.js` points to `http://localhost:5000`. For deployment, update it to use the `.env` variable.
-
-### 3. Run Frontend
+### 4️⃣ Start the development server
 
 ```bash
-npm run dev
-# open http://localhost:5173
+npm start
 ```
 
-### 4. Run Backend (from backend.zip)
+Your app will be available at **[http://localhost:3000](http://localhost:3000)**
 
-```bash
-cd backend
-npm install
-# configure .env with DB credentials & JWT_SECRET
-npm run migrate
-npm run dev
-# runs on http://localhost:5000
+---
+
+## 🔌 API Integration
+
+This frontend communicates with a backend server (`http://localhost:4000`) through REST APIs:
+
+| Endpoint                  | Method | Description                    |
+| ------------------------- | ------ | ------------------------------ |
+| `/api/events`             | GET    | Fetch all events               |
+| `/api/events/:id`         | GET    | Fetch a single event by ID     |
+| `/api/events/:id/reserve` | POST   | Reserve a ticket for an event  |
+| `/api/events/confirm`     | POST   | Confirm (simulate payment)     |
+| `/api/auth/login`         | POST   | User login (returns JWT token) |
+
+### 🔑 JWT Authentication
+
+* Token is stored in `localStorage`.
+* Axios adds the token to all requests via:
+
+  ```js
+  headers: { Authorization: `Bearer ${token}` }
+  ```
+
+---
+
+## 🔄 Real-time Updates (Socket.IO)
+
+* A global socket client is created in `src/socket.js`:
+
+  ```js
+  import { io } from "socket.io-client";
+  export const socket = io(process.env.REACT_APP_SOCKET_URL);
+  ```
+* When a user opens an event:
+
+  ```js
+  socket.emit("joinEvent", eventId);
+  ```
+* Backend emits:
+
+  ```js
+  io.to(eventId).emit("availability", { _id, availableTickets });
+  ```
+* Frontend listens and updates Redux:
+
+  ```js
+  socket.on("availability", (data) => {
+    dispatch(updateAvailability(data.availableTickets));
+  });
+  ```
+
+---
+
+## 🧠 Redux Toolkit
+
+### **eventSlice.js**
+
+Handles all event-related state:
+
+* `fetchEvents` → Fetch all events
+* `fetchEventById` → Fetch single event by ID
+* `updateAvailability` → Real-time update from socket
+* `clearSelectedEvent` → Reset state on unmount
+
+**Example Usage**
+
+```js
+const dispatch = useDispatch();
+const { list, selectedEvent, loading } = useSelector((state) => state.events);
+
+useEffect(() => {
+  dispatch(fetchEvents());
+}, []);
 ```
 
 ---
 
-## 🔑 API Endpoints
+## 🧩 Lazy Loading Routes
 
-Frontend communicates with these REST APIs:
+All major routes are lazy-loaded for better performance:
 
-* `POST /api/auth/login` → Login
-* `POST /api/auth/register` → Register
-* `GET /api/doctors` → List doctors
-* `POST /api/doctors` → Add doctor (Admin only, FormData upload)
-* `POST /api/appointments` → Book appointment
-* `GET /api/appointments` → Get appointments
-* `GET /api/medical-records` → Get patient records
-* `POST /api/medical-records/add` → Add medical record
+```js
+const Dashboard = React.lazy(() => import("../components/dashboard/Dashboard"));
+const EventDetail = React.lazy(() => import("../components/events/EventDetail"));
 
-See `innobot-health.postman_collection.json` for full API docs.
-
----
-
-## 🖼️ UI Highlights
-
-* **Mini Drawer Navbar** (MUI): Toggleable drawer with dashboard, booking, doctors, and records.
-* **DoctorCard:** Renders doctor info + profile image (base64 converted).
-* **AppointmentForm:** Responsive booking form with timeslot dropdown.
-* **Reusable Components:** `ToggleBox` (dropdown), `CustomButton` (MUI wrapper).
-* **Role-Based UI:** Add Doctor button & modal visible only for Admin.
+<Routes>
+  <Route path="/dashboard" element={<Dashboard />} />
+  <Route path="/events/:id" element={<EventDetail />} />
+</Routes>
+```
 
 ---
 
-## ⚠️ Common Issues & Fixes
+## 💅 UI / Styling
 
-1. **Redux serializability warnings (Max call stack exceeded)**
-
-   * Don’t store raw `Buffer` profile pictures in Redux. Convert to Base64 string before storing.
-
-2. **`useNavigate` outside Router**
-
-   * Ensure `BrowserRouter` wraps the app in `main.jsx`.
-
-3. **Auth context missing**
-
-   * Wrap `<Provider store={store}>` and `<AuthProvider>` inside Router.
-
-4. **401 Unauthorized**
-
-   * Token expired. `authSlice.initializeUserRole` handles logout if token is invalid.
+* Built using **Material-UI (MUI v5)** components.
+* Consistent spacing and layout via MUI’s `Box`, `Card`, `Typography`.
+* Progress indicators for async states (`CircularProgress`, `LinearProgress`).
 
 ---
 
-## 📊 Roadmap
+## 🧭 Example Flow
 
-* [ ] Dashboard analytics with Recharts / MUI Charts
-* [ ] Notifications for upcoming appointments
-* [ ] Docker setup (frontend + backend)
-* [ ] CI/CD pipeline (GitHub Actions / Vercel)
-* [ ] Role-based route guards (Admin vs Doctor vs Patient)
+1️⃣ User logs in → JWT stored in `localStorage`.
+2️⃣ Navigates to `/events` → Event list fetched via `fetchEvents`.
+3️⃣ Clicks an event → Details loaded from `/events/:id`.
+4️⃣ Real-time ticket availability updates via socket.
+5️⃣ Click **Reserve Now** → Calls `/events/:id/reserve`.
+6️⃣ Backend responds → Frontend calls `/events/confirm`.
+7️⃣ On success → Redirects to `/events`.
 
 ---
 
-## 🤝 Contribution
+## 🧰 Tech Stack
 
-1. Fork repo
-2. Create feature branch (`git checkout -b feature/new-feature`)
-3. Commit changes (`git commit -m "Add feature"`)
-4. Push branch (`git push origin feature/new-feature`)
-5. Open Pull Request
+| Category         | Library / Tool     |
+| ---------------- | ------------------ |
+| UI               | React, Material-UI |
+| State Management | Redux Toolkit      |
+| API              | Axios              |
+| Routing          | React Router v6    |
+| Real-time        | Socket.IO Client   |
+| Authentication   | JWT                |
+| Code Quality     | ESLint + Prettier  |
+
+---
+
+## 🧑‍💻 Development Tips
+
+* Always wrap API calls in try/catch blocks.
+* Use Redux store instead of component state for consistency.
+* Handle token expiry → redirect to `/login`.
+* When adding new features (like Admin Panel), extend slices for scalability.
+
+---
 

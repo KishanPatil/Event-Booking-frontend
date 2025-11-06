@@ -14,7 +14,7 @@ const Footer = () => {
       }}
     >
       <Typography variant="body2" color="text.secondary">
-        © {new Date().getFullYear()} Innobot Healthcare. All rights reserved.
+        © {new Date().getFullYear()} Event Booking. All rights reserved.
       </Typography>
     </Box>
   );

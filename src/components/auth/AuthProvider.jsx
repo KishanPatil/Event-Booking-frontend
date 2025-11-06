@@ -1,6 +1,6 @@
 import React, { createContext,  useState } from "react";
 import { useDispatch } from "react-redux";  // Ensure it's within Provider context
-import { loginUser, handleLogout } from "../../store/slice/authSlice";
+import { loginUser, logout  } from "../../store/slice/authSlice";
 // import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
@@ -18,14 +18,6 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       console.error("Login failed:", err);
     }
-  };
-
-  const logout = async () => {
-    await handleLogout();
-    setIsAuthenticated(false);
-    localStorage.removeItem("token");
-     localStorage.removeItem("isAuthenticated");
-    
   };
 
   return (

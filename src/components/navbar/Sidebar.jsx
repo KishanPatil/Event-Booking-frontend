@@ -10,15 +10,17 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import DashboardIcon from "@mui/icons-material/Dashboard";
+
+// Icons
+import EventIcon from "@mui/icons-material/Event";
 import BookOnlineIcon from "@mui/icons-material/BookOnline";
-import LocalHospitalIcon from "@mui/icons-material/LocalHospital"; // 👩‍⚕️ Doctors
-import DescriptionIcon from "@mui/icons-material/Description";   // 📑 Medical Records
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import GroupIcon from "@mui/icons-material/Group";
 import { Link } from "react-router-dom";
 
-// Styling for the Drawer
 const drawerWidth = 240;
 
+// Drawer open/close styles
 const openedMixin = (theme) => ({
   width: drawerWidth,
   transition: theme.transitions.create("width", {
@@ -68,11 +70,16 @@ const Drawer = styled(MuiDrawer, {
 export default function Sidebar({ open, handleDrawerClose }) {
   const theme = useTheme();
 
+  // ✅ Updated navigation items for Event Booking System
   const menuItems = [
     { label: "Dashboard", icon: <DashboardIcon />, link: "/dashboard" },
-    { label: "Doctors", icon: <LocalHospitalIcon />, link: "/doctors" },
-    { label: "Medical Records", icon: <DescriptionIcon />, link: "/record" },
-    { label: "Appointments", icon: <BookOnlineIcon />, link: "/appointment" },
+    { label: "Events", icon: <EventIcon />, link: "/events" },
+    { label: "My Bookings", icon: <BookOnlineIcon />, link: "/my-bookings" },
+    {
+      label: "Team Bookings",
+      icon: <GroupIcon />,
+      link: "/manager/recent-bookings",
+    },
   ];
 
   return (
@@ -86,15 +93,34 @@ export default function Sidebar({ open, handleDrawerClose }) {
           )}
         </IconButton>
       </DrawerHeader>
+
       <Divider />
+
       <List>
         {menuItems.map((item, index) => (
           <ListItem disablePadding sx={{ display: "block" }} key={index}>
-            <ListItemButton component={Link} to={item.link} sx={{ minHeight: 48, justifyContent: open ? "initial" : "center", px: 2.5 }}>
-              <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : "auto", justifyContent: "center" }}>
+            <ListItemButton
+              component={Link}
+              to={item.link}
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+              >
                 {item.icon}
               </ListItemIcon>
-              <ListItemText primary={item.label} sx={{ opacity: open ? 1 : 0 }} />
+              <ListItemText
+                primary={item.label}
+                sx={{ opacity: open ? 1 : 0 }}
+              />
             </ListItemButton>
           </ListItem>
         ))}

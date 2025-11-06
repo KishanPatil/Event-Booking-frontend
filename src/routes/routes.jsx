@@ -1,32 +1,36 @@
+import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
-import LoginPage from "../components/auth/LoginPage";
-import Dashboard from "../components/dashboard/Dashboard";
-import PrivateRoute from "./PrivateRoute";
-import NavbarLayout from "../components/navbar/NavbarLayout";
-import Doctors from "../components/doctors/Doctor";
-import Records from "../components/records/Records";
-import Appointments from "../components/appointments/Appointments";
+import EventDetail from "../components/events/EventDetail";
+
+//  Lazy-loaded components
+const LoginPage = lazy(() => import("../components/auth/LoginPage"));
+const PrivateRoute = lazy(() => import("./PrivateRoute"));
+const NavbarLayout = lazy(() => import("../components/navbar/NavbarLayout"));
+const Dashboard = lazy(() => import("../components/dashboard/Dashboard"));
+const Events = lazy(() => import("../components/events/Events"));
 
 const AppRoutes = () => {
   return (
-    <Routes>
-      {/* Public Route */}
-      <Route path="/login" element={<LoginPage />} />
+    // Suspense shows fallback until lazy component loads
+    <Suspense fallback={<h3 style={{ textAlign: "center", marginTop: "20px" }}>Loading...</h3>}>
+      <Routes>
+        {/* Public Route */}
+        <Route path="/login" element={<LoginPage />} />
 
-      {/* Private Routes with Navbar */}
-      <Route element={<PrivateRoute />}>
-        <Route element={<NavbarLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/doctors" element={<Doctors />} />
-          <Route path="/record" element= {<Records/>}/>
-          <Route path="/appointment" element = {<Appointments/>}/>
+        {/* Private Routes with Navbar */}
+        <Route element={<PrivateRoute />}>
+          <Route element={<NavbarLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/events/:id" element={<EventDetail />} />
+          </Route>
         </Route>
-      </Route>
 
-      {/* Fallback */}
-      <Route path="*" element={<h2>404 Not Found</h2>} />
-    </Routes>
+        {/* Fallback */}
+        <Route path="*" element={<h2>404 Not Found</h2>} />
+      </Routes>
+    </Suspense>
   );
 };
 

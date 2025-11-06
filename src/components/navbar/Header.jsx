@@ -3,7 +3,7 @@ import { Box, IconButton, Typography, Avatar } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ToggleBox from "../commonUI/ToggleBox";
 import { useDispatch, useSelector } from "react-redux";
-import { getUser } from "../../store/slice/authSlice";
+// import { getUser } from "../../store/slice/authSlice";
 
 export default function Header({
   open,
@@ -20,7 +20,7 @@ export default function Header({
   const userName = name || "Guest";
 
   useEffect(() => {
-    dispatch(getUser())
+    // dispatch(getUser())
   }, [dispatch])
 
   return (
@@ -37,7 +37,7 @@ export default function Header({
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" noWrap>
-          Innobot Healthcare
+          Event Booking
         </Typography>
       </Box>
 

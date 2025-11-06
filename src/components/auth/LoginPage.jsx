@@ -1,158 +1,52 @@
-import React, { useEffect, useState } from "react";
-import {
-  Container,
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Paper,
-} from "@mui/material";
-import { useSelector } from "react-redux";
-import { registerUser } from "../../store/slice/authSlice"; 
-import { CustomTabs } from "../commonUI";
-import { useAuth } from "./useAuth";
+// src/components/auth/LoginPage.jsx
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../../store/slice/authSlice";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
-export default function AuthPage() {
+const LoginPage = () => {
+  const [userId, setUserId] = useState("");
   const dispatch = useDispatch();
-  const { status,error } = useSelector((state) => state.auth);
-  const { login } = useAuth();
   const navigate = useNavigate();
-  const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
-  const [tab, setTab] = useState(0); 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    name: "",
-  });
+  const { loading } = useSelector((state) => state.auth);
 
-  // Handle form data change
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  // Redirect after login success
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/dashboard", { replace: true });
-    }
-  }, [isAuthenticated]);
-
-  // Handle form submit (Login or Register)
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    const { email, password, confirmPassword, name } = formData;
-
-    try{
-      if (!email || !password || (tab === 1 && (!confirmPassword || !name))) {
-        alert("Please fill in all fields");
-        return;
-      }
-  
-      if (tab === 1 && password !== confirmPassword) {
-        alert("Passwords do not match");
-        return;
-      }
-  
-      const userData = { email, password, name };
-      if (tab === 0) {
-        login({ email, password });
-      } else {
-        dispatch(registerUser(userData)); // Dispatch registerUser action
-      }
-      // setError(null)
-    }catch(err){
-      console.log(err)
-      // setError(err.message || "An error occurred" )
+    if (!userId) return toast.error("Please enter your userId");
+    const res = await dispatch(loginUser(userId));
+    if (res.meta.requestStatus === "fulfilled") {
+      toast.success("Login Successful!");
+      navigate("/dashboard");
+    } else {
+      toast.error("Invalid User ID");
     }
-    
   };
 
   return (
-    <Container
-      maxWidth="sm"
-      sx={{
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Paper elevation={3} sx={{ p: 4, width: "100%" }}>
-        {/* Using reusable Tabs */}
-        <CustomTabs
-          value={tab}
-          onChange={(e, v) => setTab(v)}
-          tabs={[{ label: "Login" }, { label: "Register" }]}
+    <div className="flex h-screen justify-center items-center bg-gray-50">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white shadow-md rounded px-8 pt-6 pb-8 w-96"
+      >
+        <h2 className="text-2xl mb-4 text-center font-semibold">Login</h2>
+        <input
+          type="text"
+          value={userId}
+          onChange={(e) => setUserId(e.target.value)}
+          placeholder="Enter User ID"
+          className="border p-2 w-full mb-4 rounded"
         />
-
-        <Typography variant="h5" align="center" gutterBottom>
-          {tab === 0 ? "Login to Your Account" : "Create a New Account"}
-        </Typography>
-
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded w-full"
         >
-          <TextField
-            name="email"
-            label="Email"
-            type="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            required
-            fullWidth
-          />
-          <TextField
-            name="password"
-            label="Password"
-            type="password"
-            value={formData.password}
-            onChange={handleInputChange}
-            required
-            fullWidth
-          />
-          {tab === 1 && (
-            <>
-              <TextField
-                name="name"
-                label="Name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                fullWidth
-              />
-              <TextField
-                name="confirmPassword"
-                label="Confirm Password"
-                type="password"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                required
-                fullWidth
-              />
-            </>
-          )}
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            disabled={status === "loading"}
-          >
-            {status === "loading"
-              ? "Processing..."
-              : tab === 0
-              ? "Login"
-              : "Register"}
-          </Button>
-          {error && <Typography color="error">{error}</Typography>}
-        </Box>
-      </Paper>
-    </Container>
+          {loading ? "Logging in..." : "Login"}
+        </button>
+      </form>
+    </div>
   );
-}
+};
+
+export default LoginPage;
